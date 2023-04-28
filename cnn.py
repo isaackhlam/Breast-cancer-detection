@@ -30,12 +30,12 @@ def pre_processing(df):
     return df_clean.dropna()
 
 test_transforms = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((32, 32)),
     transforms.ToTensor(),
 ])
 
 train_transforms = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((32, 32)),
 #     transforms.RandomHorizontalFlip(0.5),
     transforms.ToTensor(),
 ])
@@ -82,33 +82,33 @@ class Classifier(nn.Module):
     def __init__(self):
         super(Classifier, self).__init__()
         
-        # input 3 * 224 * 224
+        # input 3 * 32 * 32
         self.conv = torch.nn.Sequential(
             # Feature Extract 1
-            torch.nn.Conv2d(3, 32, kernel_size = 3, stride = 1, padding = 1), # 32 * 224 * 224
-            torch.nn.BatchNorm2d(32),
+            torch.nn.Conv2d(3, 16, kernel_size = 7, stride = 1, padding = 0), # 16 * 26 * 26
+            # torch.nn.BatchNorm2d(32),
             torch.nn.ReLU(),
-            torch.nn.MaxPool2d(2, 2, 0), # 32 * 112 * 112
-            # Feature Extract 2
-            torch.nn.Conv2d(32, 32, kernel_size = 3, stride = 1, padding = 1), # 32 * 112 * 112
-            torch.nn.BatchNorm2d(32),
-            torch.nn.ReLU(),
-            torch.nn.MaxPool2d(stride = 2, kernel_size = 2), # 32 * 56 * 56
-            # Feature Extract 3
-            torch.nn.Conv2d(32, 64, kernel_size = 3, stride = 1, padding = 1), # 64 * 56 * 56
-            torch.nn.ReLU(),
-            torch.nn.MaxPool2d(stride = 2, kernel_size = 2) # 64 * 28 * 28
-            )
+            torch.nn.MaxPool2d(2, 2, 0), # 16 * 13 * 13
+            # # Feature Extract 2
+            # torch.nn.Conv2d(32, 32, kernel_size = 3, stride = 1, padding = 1), # 32 * 112 * 112
+            # torch.nn.BatchNorm2d(32),
+            # torch.nn.ReLU(),
+            # torch.nn.MaxPool2d(stride = 2, kernel_size = 2), # 32 * 56 * 56
+            # # Feature Extract 3
+            # torch.nn.Conv2d(32, 64, kernel_size = 3, stride = 1, padding = 1), # 64 * 56 * 56
+            # torch.nn.ReLU(),
+            # torch.nn.MaxPool2d(stride = 2, kernel_size = 2) # 64 * 28 * 28
+        )
 
         self.dense = torch.nn.Sequential(
-            torch.nn.Linear(64 * 28 * 28, 128),
-            torch.nn.Linear(128, 64),
-            torch.nn.Linear(64, 3),
+            torch.nn.Linear(16 * 13 * 13, 100),
+            torch.nn.Linear(100, 50),
+            torch.nn.Linear(50, 3),
         )
 
     def forward(self, x):
         x = self.conv(x)
-        x = x.view(-1, 64 * 28 * 28)
+        x = x.view(-1, 16 * 13 * 13)
         x = self.dense(x)
         return x
     
@@ -121,9 +121,9 @@ epoches = 300
 patience = 20
 model = Classifier().to(device)
 loss_func = nn.CrossEntropyLoss()
-batch_size = 64
+batch_size = 128
 lr = 1e-3
-weight_decay = 1e-5
+weight_decay = 0.01
 optimizer = torch.optim.Adam(model.parameters(), lr = lr, weight_decay = weight_decay)
 # Print detail
 print(device)
@@ -132,7 +132,12 @@ print(f'{model.count_parameters()}')
 validation_split = 0.2
 
 # train_data = train_calc_data_clean.copy()
-train_data = train_calc_data_clean.append(train_mass_data_clean, ignore_index = True)
+train_calc_data_clean = pre_processing(train_calc_data)
+train_mass_data_clean = pre_processing(train_mass_data)
+test_calc_data_clean = pre_processing(test_calc_data)
+test_mass_data_clean = pre_processing(test_mass_data)
+
+train_data = pd.concat([train_mass_data_clean, train_calc_data_clean], ignore_index = True)
 train_set = BreastDataset(train_data, transform = train_transforms)
 dataset_size = len(train_set)
 indices = list(range(dataset_size))
@@ -146,7 +151,7 @@ train_loader = torch.utils.data.DataLoader(train_set, batch_size = batch_size, s
 valid_loader = torch.utils.data.DataLoader(train_set, batch_size = batch_size, sampler=valid_sampler)
 
 # test_data = test_calc_data_clean.copy()
-test_data = test_calc_data_clean.append(test_mass_data_clean, ignore_index = True)
+test_data = pd.concat([test_calc_data_clean, test_mass_data_clean], ignore_index = True)
 test_set = BreastDataset(test_data, transform = test_transforms)
 test_loader = torch.utils.data.DataLoader(test_set, batch_size = batch_size, shuffle = False)
 
@@ -154,21 +159,21 @@ print(len(train_loader.sampler.indices))
 print(len(valid_loader.sampler.indices))
 print(len(test_set))
 
-name = "kaggle-Version16"
+name = "github-version-1"
 
 wandb.login(key = os.getenv('WANDB_API_KEY'))
 wandb.init(
     project = "Breast-Cancer-Image-Diganosis",
     name = name,
-    notes = "Full mammogram image only, with 3 CNN layer, spliting train data to validate, no data aug",
-    tags = ["baseline", "1612.00542"],
+    notes = "Full mammogram image only, with single CNN layer, spliting train data to validate, no data aug",
+    tags = ["baseline", "10.1109/ICARCV.2014.7064414"],
     config = {
         "learning rate": lr,
         "architecture": "CNN",
         "epochs": epoches,
         "patience": patience,
         "batch_size": batch_size,
-        "image_dim": 224,
+        "image_dim": 32,
         "no_of_params": model.count_parameters(),
         "weighted_decay": weight_decay,
     }
