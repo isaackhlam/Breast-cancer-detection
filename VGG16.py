@@ -30,13 +30,13 @@ def pre_processing(df):
     return df_clean.dropna()
 
 test_transforms = transforms.Compose([
-    transforms.Resize((32, 32)),
+    transforms.Resize((224, 224)),
     transforms.ToTensor(),
 ])
 
 train_transforms = transforms.Compose([
-    transforms.Resize((32, 32)),
-    transforms.RandomHorizontalFlip(0.5),
+    transforms.Resize((224, 224)),
+    # transforms.RandomHorizontalFlip(0.5),
     transforms.ToTensor(),
 ])
 
