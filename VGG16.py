@@ -96,16 +96,16 @@ class Classifier(nn.Module):
             torch.nn.MaxPool2d(2, 2, 0), # 128 * 56 * 56
             torch.nn.Conv2d(128, 256, kernel_size = 3, stride = 1, padding = 1), # 256 * 56 * 56
             torch.nn.ReLU(),
-            torch.nn.Conv2d(128, 256, kernel_size = 3, stride = 1, padding = 1), # 256 * 56 * 56
+            torch.nn.Conv2d(256, 256, kernel_size = 3, stride = 1, padding = 1), # 256 * 56 * 56
             torch.nn.ReLU(),
-            torch.nn.Conv2d(128, 256, kernel_size = 3, stride = 1, padding = 1), # 256 * 56 * 56
+            torch.nn.Conv2d(256, 256, kernel_size = 3, stride = 1, padding = 1), # 256 * 56 * 56
             torch.nn.ReLU(),
             torch.nn.MaxPool2d(2, 2, 0), # 256 * 28 * 28
             torch.nn.Conv2d(256, 512, kernel_size = 3, stride = 1, padding = 1), # 512 * 28 * 28
             torch.nn.ReLU(),
-            torch.nn.Conv2d(256, 512, kernel_size = 3, stride = 1, padding = 1), # 512 * 28 * 28
+            torch.nn.Conv2d(512, 512, kernel_size = 3, stride = 1, padding = 1), # 512 * 28 * 28
             torch.nn.ReLU(),
-            torch.nn.Conv2d(256, 512, kernel_size = 3, stride = 1, padding = 1), # 512 * 28 * 28
+            torch.nn.Conv2d(512, 512, kernel_size = 3, stride = 1, padding = 1), # 512 * 28 * 28
             torch.nn.ReLU(),
             torch.nn.MaxPool2d(2, 2, 0), # 512 * 14 * 14
             torch.nn.Conv2d(512, 512, kernel_size = 3, stride = 1, padding = 1), # 512 * 14 * 14
