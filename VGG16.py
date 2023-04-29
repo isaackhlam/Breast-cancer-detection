@@ -120,10 +120,10 @@ class Classifier(nn.Module):
         self.dense = torch.nn.Sequential(
             torch.nn.Linear(512 * 7 * 7, 4096),
             torch.nn.ReLU(),
-            torch.nn.dropout(p = 0.5),
+            torch.nn.Dropout(p = 0.5),
             torch.nn.Linear(4096, 4096),
             torch.nn.ReLU(),
-            torch.nn.dropout(p = 0.5),
+            torch.nn.Dropout(p = 0.5),
             torch.nn.Linear(4096, 3),
         )
 
