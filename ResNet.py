@@ -210,11 +210,11 @@ class ResNet(nn.Module):
         # 參數初始化
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-            nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
+                nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
 
             elif isinstance(m, nn.BatchNorm2d):
-            nn.init.constant_(m.weight, 1)
-            nn.init.constant_(m.bias, 0)        
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)        
 
     def net_block_layer(self, net_block, out_channels, num_blocks, stride=1):
         downsample = None
@@ -227,13 +227,13 @@ class ResNet(nn.Module):
         layers = []
         layers.append(net_block(self.in_channels, out_channels, stride, downsample))
         if net_block.expansion != 1:
-        self.in_channels = out_channels * net_block.expansion
+            self.in_channels = out_channels * net_block.expansion
 
         else:
-        self.in_channels = out_channels
+            self.in_channels = out_channels
 
         for i in range(1, num_blocks):
-        layers.append(net_block(self.in_channels, out_channels, 1, None))
+            layers.append(net_block(self.in_channels, out_channels, 1, None))
 
         return nn.Sequential(*layers)
 
