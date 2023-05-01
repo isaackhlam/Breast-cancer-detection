@@ -221,7 +221,7 @@ class ResNet(nn.Module):
 
       # 在 shortcut 時，若維度不一樣，要更改維度
         if stride != 1 or self.in_channels != out_channels * net_block.expansion:
-        downsample = nn.Sequential(nn.Conv2d(self.in_channels, out_channels * net_block.expansion, kernel_size=1, stride=stride, bias=False),
+            downsample = nn.Sequential(nn.Conv2d(self.in_channels, out_channels * net_block.expansion, kernel_size=1, stride=stride, bias=False),
                       nn.BatchNorm2d(out_channels * net_block.expansion))
 
         layers = []
