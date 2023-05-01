@@ -411,7 +411,7 @@ epoches = 300
 patience = 20
 #model = Classifier().to(device)
 #model = InceptionV1(3, training=True).to(device)
-model = ResNet(basic_block, [2, 2, 2, 2], 3)
+model = ResNet(basic_block, [2, 2, 2, 2], 3).to(device)
 loss_func = nn.CrossEntropyLoss()
 batch_size = 64
 lr = 1e-3
