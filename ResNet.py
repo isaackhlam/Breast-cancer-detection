@@ -252,6 +252,10 @@ class ResNet(nn.Module):
 
         return x
 
+    def count_parameters(self):
+        return sum(p.numel() for p in self.parameters() if p.requires_grad)
+
+
 def ResNet_n(num_layers):
     if num_layers == 18:
         # ResNet18
