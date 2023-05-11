@@ -39,7 +39,7 @@ train_transforms = transforms.Compose([
     transforms.Resize((256, 256)),
     transforms.RandomHorizontalFlip(0.5),
     transforms.RandomRotation(5),
-    transforms.RandomResizedCrop(size=(224, 224)),
+    transforms.RandonResizedCrop(size=(224, 224)),
     transforms.ToTensor(),
 ])
 
@@ -62,9 +62,12 @@ class BreastDataset(Dataset):
             img_path = list(dict.fromkeys(img_path))
             
             # Label image
+            pathology = row["pathology"]
             label = 0
             if row["pathology"] == "MALIGNANT":
                 label = 1
+            elif row["pathology"] == "BENIGN":
+                label = 2
             
             for img in img_path:
                 self.image_pair.append([img, label])
@@ -121,10 +124,10 @@ epoches = 300
 patience = 20
 no_of_classes = 
 #model = Classifier().to(device)
-model = torchvision.models.mobilenet_v3_large(weights="IMAGENET1K_V2")
+model = torchvision.models.vgg13_bn(weights="IMAGENET1K_V1")
 loss_func = nn.CrossEntropyLoss()
 batch_size = 64
-lr = 1e-5
+lr = 5e-5
 weight_decay = 0.0001
 optimizer = torch.optim.Adam(model.parameters(), lr = lr, weight_decay = weight_decay)
 # Print detail
