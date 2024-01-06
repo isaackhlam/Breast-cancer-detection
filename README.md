@@ -1,10 +1,11 @@
 # Breast cancer detection
 
-This is my first trail on Deep CNN network for abnormal dectect about breast cancer.
+This is my first trail on Deep CNN network for abnormal detect about breast cancer.
 The work is also my course project for SEEM 2460 Introduction for Data Science
 The training script is quite messy and kinda unreadable
-The project is in collebration with two other students
-I focus on the implementation, analysis and liteture writing, while the others working on report writing and data visualization
+The project is in collaboration with two other students
+I focus on the implementation, analysis and literature writing, while the others working on report writing and data visualization
+Both paper works can be found in the docs folder
 
 ## Abstract
 
